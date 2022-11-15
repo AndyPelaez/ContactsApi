@@ -31,8 +31,6 @@ export async function postCreateContact(
   next: NextFunction
 ) {
   const payload: ICreateContact = req.body;
-  console.log(req.body);
-
   const contacts = await createContact(payload);
   res.status(200).json(contacts);
 }
@@ -53,6 +51,6 @@ export async function deleteRemoveContact(
 ) {
   const { id } = req.params;
   const payload: IContact = req.body;
-  const contacts = await removeContact(id);
-  res.status(200).json(contacts);
+  const contact = await removeContact(id);
+  res.status(200).json(contact);
 }
