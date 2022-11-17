@@ -40,7 +40,6 @@ export const patchUpdateContact = asyncHandler(
 export const deleteRemoveContact = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const payload: IContact = req.body;
     const contact = await removeContact(id);
     res.status(200).json(contact);
   }
