@@ -1,0 +1,31 @@
+version: "3"
+services:
+  contacts-app:
+    build:
+      context: ../ContactsApp/
+      dockerfile: Dockerfile
+    image: contacts-app
+    container_name: contacts-app
+    restart: always
+    ports:
+      - 4200:3000
+    depends_on:
+      - contacts-api
+  contacts-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: contacts-api
+    container_name: contacts-api
+    restart: always
+    ports:
+      - 3001:3001
+    external_links:
+      - mongo
+    depends_on:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - 27017:27017
