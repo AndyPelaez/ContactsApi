@@ -18,7 +18,8 @@ export const getContact = asyncHandler(
 );
 export const getContacts = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const contacts = await findContacts();
+    const { query } = req.query;
+    const contacts = await findContacts(query as string | string[]);
     res.status(200).json(contacts);
   }
 );

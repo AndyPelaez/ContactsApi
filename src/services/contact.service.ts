@@ -1,10 +1,22 @@
+import { OrFilterBuilder } from "../classes/or-filter-builder";
 import { IContact, ICreateContact } from "../interfaces/contact.interface";
 import { Contact } from "../models/contact.model";
+
+const contactKeys = ["name", "email", "address", "phoneNumber"];
 
 export function findContact(id: string) {
   return Contact.findById(id);
 }
-export function findContacts() {
+export function findContacts(queries?: string | string[]) {
+  if (queries) {
+    let filterBuilder = new OrFilterBuilder(
+      Contact,
+      [...contactKeys],
+      Array.isArray(queries) ? queries : [queries]
+    );
+
+    return filterBuilder.getResult();
+  }
   return Contact.find();
 }
 export function createContact(contact: ICreateContact) {
