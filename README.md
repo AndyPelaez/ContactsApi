@@ -28,5 +28,4 @@ This project was generated with [node](https://nodejs.org/en/) version v16.16.0 
 > - Clone the Angular app [repository](https://github.com/AndyPelaez/ContactsApp) and store it in the same project's folder.
 > - Run automatic build “docker-compose up --build -d”
 > - Check services are running correctly in http://localhost:4200,
-> - **Note**: This may take some time installing “serve” package using npx.
 > - Run “npm run migrate:up” to add initial data.
