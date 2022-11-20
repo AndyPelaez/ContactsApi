@@ -1,6 +1,10 @@
 import { IContact, ICreateContact } from "../interfaces/contact.interface";
 import { requestWithSupertest } from "../test-server";
-import { expectedContactModel, randomPhoneNumber } from "./utils.functions";
+import {
+  expectedContactModel,
+  expectedValidationErrorModel,
+  randomPhoneNumber,
+} from "./utils.functions";
 
 const contactUrl = "/contacts";
 
@@ -51,7 +55,43 @@ describe("Contact Endpoints", () => {
     }
   });
 
-  it("POST /contacts/id should add a contact", () => {
+  it("POST /contacts with missing values should return errors", () => {
+    return requestWithSupertest
+      .post(contactUrl)
+      .send({})
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual(expectedValidationErrorModel());
+        const { fields } = response.body;
+        expect(fields).toContain("phoneNumber");
+        expect(fields).toContain("email");
+        expect(fields).toContain("name");
+        expect(fields).toContain("address");
+        expect(
+          (response.body.messages as Array<string>).length
+        ).toBeGreaterThan(0);
+      });
+  });
+  it("POST /contacts with invalid values should return errors", () => {
+    return requestWithSupertest
+      .post(contactUrl)
+      .send({
+        ...contactToPost,
+        phoneNumber: "string",
+        email: "email@",
+      } as ICreateContact)
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual(expectedValidationErrorModel());
+        const { fields } = response.body;
+        expect(fields).toContain("phoneNumber");
+        expect(fields).toContain("email");
+        expect(response.body.messages.length).toBeGreaterThan(0);
+      });
+  });
+  it("POST /contacts with valid values should add a contact", () => {
     return requestWithSupertest
       .post(contactUrl)
       .send(contactToPost)

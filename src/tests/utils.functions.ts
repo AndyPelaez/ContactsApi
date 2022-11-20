@@ -6,6 +6,12 @@ export const expectedContactModel = () =>
     email: expect.any(String),
     phoneNumber: expect.any(String),
   });
+  
+export const expectedValidationErrorModel = () =>
+  expect.objectContaining({
+    fields: expect.any(Array),
+    messages: expect.any(Array),
+  });
 
 
 export const randomPhoneNumber = () =>
