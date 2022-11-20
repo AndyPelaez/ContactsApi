@@ -12,7 +12,7 @@ This project was generated with [node](https://nodejs.org/en/) version v16.16.0 
 ### DEVELOPMENT MODE
 
 > - Before running the api, ensure the connection string is rigth in the env file(.env.development)
-> - Run “npm run migrate:up” to execute all migrations
+> - Run “npm run migrate:dev:up” to execute all migrations
 > - RUN “npm run start:dev” to run the api server
 
 
@@ -27,5 +27,5 @@ This project was generated with [node](https://nodejs.org/en/) version v16.16.0 
 > - Ensure you do not have any service running on ports 4200 and 3001.
 > - Clone the Angular app [repository](https://github.com/AndyPelaez/ContactsApp) and store it in the same project's folder.
 > - Run automatic build “docker-compose up --build -d”
-> - Check services are running correctly in http://localhost:4200,
 > - Run “npm run migrate:up” to add initial data.
+> - Check services are running correctly in http://localhost:4200,
