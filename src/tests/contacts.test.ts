@@ -4,10 +4,25 @@ import { expectedContactModel, randomPhoneNumber } from "./utils.functions";
 
 const contactUrl = "/contacts";
 
-const contactToCreate: ICreateContact = {
+const contactsToCreate: ICreateContact[] = [
+  {
+    address: "Washington, United States",
+    email: "pedro@gmail.com",
+    name: "Pedro Luis",
+    phoneNumber: randomPhoneNumber(),
+  },
+  {
+    address: "Florida, United States",
+    email: "derek@gmail.com",
+    name: "Derek Perez",
+    phoneNumber: randomPhoneNumber(),
+  },
+];
+
+const contactToPost: ICreateContact = {
   address: "Washington, United States",
-  email: "derek@gmail.com",
-  name: "Derek Perez",
+  email: "raul@gmail.com",
+  name: "Raúl Paz",
   phoneNumber: randomPhoneNumber(),
 };
 
@@ -19,31 +34,36 @@ const contactToUpdate: ICreateContact = {
 };
 
 describe("Contact Endpoints", () => {
-  let createdContact: IContact;
+  let createdContacts: IContact[] = [];
 
   beforeAll(async () => {
-    const response = await requestWithSupertest
-      .post(contactUrl)
-      .send(contactToCreate);
-    createdContact = response.body;
+    for (const contact of contactsToCreate) {
+      const response = await requestWithSupertest
+        .post(contactUrl)
+        .send(contact);
+      createdContacts.push(response.body);
+    }
+  });
+
+  afterAll(async () => {
+    for (const contact of createdContacts) {
+      await requestWithSupertest.delete(`${contactUrl}/${contact._id}`);
+    }
   });
 
   it("POST /contacts/id should add a contact", () => {
     return requestWithSupertest
       .post(contactUrl)
-      .send(contactToCreate)
+      .send(contactToPost)
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(expectedContactModel());
-        requestWithSupertest
-          .delete(`${contactUrl}/${response.body._id}`)
-          .expect(200)
-          .then();
+        createdContacts.push(response.body);
       });
   });
 
-  it("GET /contacts should show all contacts", async () => {
+  it("GET /contacts without queries should show all contacts", async () => {
     await requestWithSupertest
       .get(contactUrl)
       .expect("Content-Type", /json/)
@@ -57,7 +77,7 @@ describe("Contact Endpoints", () => {
 
   it("GET /contacts/id should show a contact", () => {
     return requestWithSupertest
-      .get(`${contactUrl}/${createdContact._id}`)
+      .get(`${contactUrl}/${createdContacts[0]._id}`)
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -67,13 +87,13 @@ describe("Contact Endpoints", () => {
 
   it("PATCH /contacts/id should update a contact", () => {
     return requestWithSupertest
-      .patch(`${contactUrl}/${createdContact._id}`)
-      .send({ ...createdContact, ...contactToUpdate })
+      .patch(`${contactUrl}/${createdContacts[0]._id}`)
+      .send({ ...createdContacts, ...contactToUpdate })
       .expect("Content-Type", /json/)
       .expect(200)
       .then(() => {
         requestWithSupertest
-          .get(`${contactUrl}/${createdContact._id}`)
+          .get(`${contactUrl}/${createdContacts[0]._id}`)
           .then((response) => {
             const { address, email, name, phoneNumber } =
               response.body as IContact;
@@ -87,9 +107,11 @@ describe("Contact Endpoints", () => {
 
   it("DELETE /contacts/id should delete a contact", () => {
     return requestWithSupertest
-      .delete(`${contactUrl}/${createdContact._id}`)
+      .delete(`${contactUrl}/${createdContacts[0]._id}`)
       .expect("Content-Type", /json/)
       .expect(200)
-      .then();
+      .then((res) => {
+        createdContacts.shift();
+      });
   });
 });
