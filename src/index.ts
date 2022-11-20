@@ -1,8 +1,8 @@
+import { dotenvInitializer } from "./utils/dotenv";
 import app from "./app";
-import dotenv from "dotenv";
 import { mongoConnect } from "./utils/database";
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+dotenvInitializer();
 
 const port = process.env.PORT || 3001;
 

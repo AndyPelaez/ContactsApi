@@ -1,7 +1,7 @@
 import { mongoConnect } from "../utils/database";
-import dotenv from "dotenv";
+import { dotenvInitializer } from "../utils/dotenv";
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+dotenvInitializer();
 
 export const up = async () => {
   await mongoConnect();

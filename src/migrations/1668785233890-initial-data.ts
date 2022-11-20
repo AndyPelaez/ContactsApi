@@ -1,10 +1,10 @@
 import { mongoConnect } from "../utils/database";
-import dotenv from "dotenv";
 import { randomPhoneNumber } from "../tests/utils.functions";
 import { ICreateContact } from "../interfaces/contact.interface";
 import { Contact } from "../models/contact.model";
+import { dotenvInitializer } from "../utils/dotenv";
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+dotenvInitializer();
 
 const contacts: ICreateContact[] = [
   {
