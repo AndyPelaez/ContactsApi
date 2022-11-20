@@ -75,6 +75,44 @@ describe("Contact Endpoints", () => {
       });
   });
 
+  it("GET /contacts with a query should show contacts that match", async () => {
+    await requestWithSupertest
+      .get(contactUrl)
+      .query({ query: "Pedro" })
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((response) => {
+        const { body } = response;
+        expect(body).toEqual(
+          expect.arrayContaining([expectedContactModel()] || [])
+        );
+        expect(
+          (body as IContact[]).find((c) => c.name === "Pedro Luis")
+        ).not.toBeUndefined();
+      });
+  });
+  it("GET /contacts with a query array should show contacts that match", async () => {
+    await requestWithSupertest
+      .get(contactUrl)
+      .query({ query: ["pedro", "florida"] })
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((response) => {
+        const { body } = response;
+        expect(body).toEqual(
+          expect.arrayContaining([expectedContactModel()] || [])
+        );
+        expect(
+          (body as IContact[]).find((c) => c.name === "Pedro Luis")
+        ).not.toBeUndefined();
+        expect(
+          (body as IContact[]).find(
+            (c) => c.address === "Florida, United States"
+          )
+        ).not.toBeUndefined();
+      });
+  });
+
   it("GET /contacts/id should show a contact", () => {
     return requestWithSupertest
       .get(`${contactUrl}/${createdContacts[0]._id}`)
